@@ -1,4 +1,21 @@
 {
+  "name": "ai-dosth-backend",
+  "version": "1.0.0",
+  "description": "Backend server for AI Dosth chat application.",
+  "main": "server.js",
+  "type": "module", 
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "express",
+    "node",
+    "openai",
+    "mongodb"
+  ],
+  "author": "Gunavardhan",
+  "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
