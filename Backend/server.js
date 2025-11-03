@@ -5,15 +5,24 @@ import mongoose from "mongoose";
 import chatRoutes from "./routes/chat.js";
 
 const app = express();
-const PORT = 8080;
+
+const PORT = process.env.PORT ||8080;
+
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
+
+app.use(cors({
+    origin: FRONTEND_URL,
+    methods: ['GET', 'POST'],
+    credentials: true,
+    optionsSuccessStatus: 204
+}));
 
 app.use(express.json());
-app.use(cors());
 
 app.use("/api", chatRoutes);
 
 app.listen(PORT, () =>{
-    console.log("server listening");
+    console.log(`server listening on port ${PORT}`);
     connectDB();
 });
 
