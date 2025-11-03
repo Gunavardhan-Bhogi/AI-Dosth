@@ -14,13 +14,16 @@ function ChatWindow() {
     const getReply = async () => {
         setLoading(true);
         setNewChat(false);
+        
+        const historyToSend = [...prevChats, {role: "user", content: prompt}];
+
         const options = {
             method: "POST",
             headers: {
                 "Content-Type" : "application/json"
             },
             body: JSON.stringify({
-                message: prompt,
+                messages: historyToSend,
                 threadId: currThreadId
             })
         };

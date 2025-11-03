@@ -4,7 +4,7 @@ import {MyContext}from "./MyContext.jsx";
 import {v1 as uuidv1} from "uuid";
 
 function Sidebar() {
-    const {allThreads, setAllThreads, currThreadId, setNewChat, setPrompt, setReply, setCurrThreadId, setPrevChats, isSideBarOpen, setIsSideBarOpen} = useContext(MyContext);
+    const {allThreads, setAllThreads, currThreadId, setNewChat, setPrompt, setReply, setCurrThreadId, setPrevChats, isSideBarOpen, setIsSideBarOpen, newChat} = useContext(MyContext);
 
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
 
@@ -20,9 +20,34 @@ function Sidebar() {
         }
     };
 
+    const fetchThreadHistory = async (threadId) => {
+        if (!threadId) return;
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/thread/${threadId}`);
+            const res = await response.json();
+
+            if (res.messages && res.messages.length > 0) {
+                 setPrevChats(res.messages);
+                 setNewChat(false);
+            } else {
+                 setPrevChats([]);
+                 setNewChat(true);
+            }
+        } catch (error) {
+            console.error("Error fetching history on refresh:", error);
+            createNewChat();
+        }
+    }
+
     useEffect( () => {
         getAllThreads();
     },[currThreadId]);
+
+    useEffect(() => {
+        if(!newChat && allThreads.length>0 && currThreadId){
+            fetchThreadHistory(currThreadId);
+        }
+    },[allThreads.length]);
 
     const createNewChat = () => {
         setNewChat(true);
@@ -34,15 +59,8 @@ function Sidebar() {
 
     const changeThread = async (newThreadId) => {
         setCurrThreadId(newThreadId);
-        try {
-            const response = await fetch(`${BACKEND_URL}/api/thread/${newThreadId}`);
-            const res = await response.json();
-            setPrevChats(res.messages);
-            setNewChat(false);
-            setReply(null);
-        } catch (error) {
-            console.log(error);
-        }
+        await fetchThreadHistory(newThreadId);
+        setReply(null);
     }
 
     const deleteThread = async (threadId) => {
@@ -67,7 +85,8 @@ function Sidebar() {
             <div className="sidebar-header-mobile">
                 <button onClick={createNewChat} className="new-chat-btn">
                 <img className="logo" src="/newlogo.png" alt="logo" />
-                <span><i className="fa-solid fa-pen-to-square"></i></span>
+                <span>New Chat</span>
+                <i className="fa-solid fa-pen-to-square"></i>
                 </button>
 
             <button

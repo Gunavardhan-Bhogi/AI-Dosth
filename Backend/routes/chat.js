@@ -60,9 +60,11 @@ router.delete("/thread/:threadId", async (req,res) => {
 });
 
 router.post("/chat", async(req, res) => {
-    const {threadId, message} = req.body;
-    if(!threadId || !message){
-        res.status(400).json({error: "missing required fields"});
+    const {threadId, messages} = req.body;
+    const latestUserMessage = messages[messages.length-1].content;
+
+    if(!threadId || !messages || messages.length === 0){
+        res.status(400).json({error: "Missing threadId or empty message history"});
     }
 
     try{
@@ -70,13 +72,13 @@ router.post("/chat", async(req, res) => {
         if(!thread){
             thread = new Thread({
                 threadId,
-                title: message,
-                messages: [{role: "user",content: message}]
+                title: latestUserMessage,
+                messages: messages
             });
         }else{
-            thread.messages.push({role: "user",content:message});
+            thread.messages = messages;
         }
-        const assistantReply = await getOpenAIAPIResponse(message);
+        const assistantReply = await getOpenAIAPIResponse(messages);
         
         thread.messages.push({role: "assistant", content: assistantReply});
         thread.updatedAt = new Date();
@@ -85,7 +87,7 @@ router.post("/chat", async(req, res) => {
         res.json({reply:assistantReply});
     }catch(err){
         console.log(err);
-        res.status(500).json({error: "Something went wrong"});
+        res.status(500).json({error: "Something went wrong during chat processing"});
     }
 });
 
