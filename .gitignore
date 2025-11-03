@@ -1,0 +1,60 @@
+AI DOSTH/.gitignore
+
+----------------------------------------
+
+1. Dependency Directories (IGNORE)
+
+----------------------------------------
+
+Node modules for the root/parent folder
+
+/node_modules
+
+Node modules for the Backend
+
+/Backend/node_modules
+
+Node modules for the Frontend
+
+/Frontend/node_modules
+
+----------------------------------------
+
+2. Build Output Directories (IGNORE)
+
+----------------------------------------
+
+Vite/React build output
+
+/Frontend/dist
+/Frontend/build
+
+----------------------------------------
+
+3. Environment Variables & Secrets (CRITICAL: IGNORE)
+
+----------------------------------------
+
+General environment files
+
+.env
+.env.local
+
+Backend environment variables
+
+/Backend/.env
+
+Frontend environment variables
+
+/Frontend/.env
+/Frontend/.env.local
+/Frontend/.env.*
+
+----------------------------------------
+
+4. OS/IDE Files (IGNORE)
+
+----------------------------------------
+
+.DS_Store
+*.swp
