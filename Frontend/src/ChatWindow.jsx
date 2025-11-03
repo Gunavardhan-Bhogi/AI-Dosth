@@ -9,6 +9,7 @@ function ChatWindow() {
     const [loading, setLoading] = useState(false);
 
     const isUIBusy = loading || isPrinting;
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
 
     const getReply = async () => {
         setLoading(true);
@@ -24,7 +25,7 @@ function ChatWindow() {
             })
         };
         try{
-           const response =  await fetch("http://localhost:8080/api/chat", options);
+           const response =  await fetch(`${BACKEND_URL}/api/chat`, options);
            const res = await response.json();
            console.log(res.reply);
            setReply(res.reply);
